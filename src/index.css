@@ -1,0 +1,651 @@
+/* ============================================
+   FILM SCROLL PORTFOLIO — Nicolò Florean
+   ============================================ */
+
+/* --- Design Tokens --- */
+:root {
+  --bg: #0a0a0a;
+  --bg-subtle: #111111;
+  --surface: #1a1a1a;
+  --purple: #a855f7;
+  --purple-deep: #7c3aed;
+  --purple-glow: #c084fc;
+  --text: #f5f5f5;
+  --text-muted: #777;
+  --font-heading: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* --- Reset --- */
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: auto;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* --- Film Scroll Layout --- */
+.film-viewport {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.film-scene {
+  position: absolute;
+  inset: 0;
+  will-change: opacity, transform;
+}
+
+.film-scroll-proxy {
+  height: 400vh;
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* --- Scroll Indicator --- */
+.scroll-indicator {
+  position: fixed;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  pointer-events: none;
+}
+
+.scroll-indicator__track {
+  position: relative;
+  width: 2px;
+  height: 160px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+/* Il fill cresce con lo scroll: nessuna transizione CSS,
+   l'aggiornamento frame-by-frame viene da ScrollTrigger/scroll event */
+.scroll-indicator__fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(180deg, var(--purple), var(--purple-glow));
+  border-radius: 1px;
+  box-shadow: 0 0 10px rgba(168, 85, 247, 0.35);
+}
+
+/* --- Section Label (reused across scenes) --- */
+.section-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--purple);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+
+/* ============================================
+   HERO SCENE
+   ============================================ */
+.hero-scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.hero-scene__3d {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero-scene__gradient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    rgba(10, 10, 10, 0.4) 50%,
+    rgba(10, 10, 10, 0.9) 100%
+  );
+  z-index: 1;
+}
+
+.hero-scene__content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 5vw;
+  transition: transform 0.1s ease-out;
+}
+
+.hero-scene__name {
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 8vw, 7rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  margin-bottom: 1.5rem;
+}
+
+.hero-scene__char {
+  will-change: opacity, transform;
+}
+
+.hero-scene__subtitle {
+  font-family: var(--font-mono);
+  font-size: clamp(0.8rem, 1.5vw, 1.1rem);
+  color: var(--text-muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 3rem;
+}
+
+.hero-scene__hint {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+  transition: opacity 0.3s;
+}
+
+.hero-scene__arrow {
+  margin-top: 0.5rem;
+  animation: bounce 2s infinite;
+  font-size: 1.2rem;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+/* ============================================
+   ABOUT SCENE
+   ============================================ */
+.about-scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.about-scene__shapes {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.about-scene__layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6vw;
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 6vw;
+  align-items: center;
+}
+
+.about-scene__title {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+}
+
+.about-scene__bio {
+  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
+  line-height: 1.7;
+  color: var(--text);
+  margin-bottom: 1rem;
+}
+
+.about-scene__bio--muted {
+  color: var(--text-muted);
+}
+
+.about-scene__skills-title {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--purple);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1.5rem;
+}
+
+.about-scene__skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+/* Skill Pill */
+.skill-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--surface);
+  border: 1px solid rgba(168, 85, 247, 0.1);
+  border-radius: 100px;
+  font-size: 0.8rem;
+  transition: border-color 0.3s, background 0.3s;
+}
+
+.skill-pill:hover {
+  border-color: var(--purple);
+  background: rgba(168, 85, 247, 0.05);
+}
+
+.skill-pill__icon {
+  font-size: 1rem;
+}
+
+.skill-pill__name {
+  font-family: var(--font-body);
+  font-weight: 500;
+}
+
+/* ============================================
+   PORTFOLIO SCENE
+   ============================================ */
+.portfolio-scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--bg);
+  padding: 0 6vw;
+}
+
+.portfolio-scene__header {
+  text-align: center;
+  margin-bottom: 3vh;
+}
+
+.portfolio-scene__title {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.portfolio-scene__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  max-width: 1100px;
+  width: 100%;
+  perspective: 1200px;
+}
+
+/* Portfolio Card */
+.portfolio-card {
+  position: relative;
+  display: block;
+  padding: 2rem;
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s;
+  will-change: transform, opacity;
+}
+
+.portfolio-card:hover {
+  border-color: var(--card-accent, var(--purple));
+}
+
+.portfolio-card__glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at center,
+    var(--card-accent, var(--purple)) 0%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.portfolio-card:hover .portfolio-card__glow {
+  opacity: 0.06;
+}
+
+.portfolio-card__content {
+  position: relative;
+  z-index: 1;
+}
+
+.portfolio-card__tags {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.portfolio-card__tag {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  color: var(--purple);
+  padding: 0.2rem 0.6rem;
+  border: 1px solid rgba(168, 85, 247, 0.2);
+  border-radius: 100px;
+  letter-spacing: 0.05em;
+}
+
+.portfolio-card__title {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+}
+
+.portfolio-card__desc {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 1.2rem;
+}
+
+.portfolio-card__link {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--purple);
+  transition: color 0.3s;
+}
+
+.portfolio-card:hover .portfolio-card__link {
+  color: var(--purple-glow);
+}
+
+/* CTA */
+.portfolio-scene__cta {
+  margin-top: 4vh;
+  text-align: center;
+}
+
+.portfolio-scene__cta p {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin-bottom: 0.8rem;
+}
+
+.portfolio-scene__cta-link {
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  color: var(--purple);
+  border: 1px solid var(--purple);
+  padding: 0.7rem 2rem;
+  border-radius: 100px;
+  transition: all 0.3s ease;
+  background: transparent;
+  cursor: pointer;
+}
+
+.portfolio-scene__cta-link:hover {
+  background: var(--purple);
+  color: var(--bg);
+}
+
+/* ============================================
+   CONTACT SCENE
+   ============================================ */
+.contact-scene {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.contact-scene__3d {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.contact-scene__gradient {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 0%,
+    rgba(10, 10, 10, 0.6) 70%,
+    rgba(10, 10, 10, 0.95) 100%
+  );
+  z-index: 1;
+}
+
+.contact-scene__content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 6vw;
+  max-width: 700px;
+}
+
+.contact-scene__title {
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 3rem;
+}
+
+/* Contact Links */
+.contact-scene__links {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.contact-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.2rem 1.8rem;
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.contact-link:hover {
+  border-color: var(--purple);
+  background: rgba(168, 85, 247, 0.04);
+  transform: translateX(4px);
+}
+
+.contact-link__label {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  width: 100px;
+  text-align: left;
+}
+
+.contact-link__value {
+  font-size: 1rem;
+  font-weight: 500;
+  flex: 1;
+  text-align: center;
+}
+
+.contact-link__arrow {
+  font-size: 1.2rem;
+  color: var(--purple);
+  opacity: 0;
+  transform: translateX(-8px);
+  transition: all 0.3s ease;
+}
+
+.contact-link:hover .contact-link__arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* CTA */
+.contact-scene__avail {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* Footer */
+.contact-scene__footer {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.contact-scene__brand {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+/* --- Accent color --- */
+.accent {
+  color: var(--purple);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+/* Tablet */
+@media (max-width: 900px) {
+  .about-scene__layout {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .portfolio-scene__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .scroll-indicator {
+    right: 12px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .hero-scene__name {
+    font-size: clamp(2rem, 10vw, 3.5rem);
+  }
+
+  .portfolio-scene__grid {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+  }
+
+  .contact-link {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+    padding: 1rem 1.2rem;
+  }
+
+  .contact-link__label {
+    width: auto;
+  }
+
+  .contact-link__value {
+    text-align: left;
+  }
+
+  .contact-link__arrow {
+    display: none;
+  }
+
+  .scroll-indicator {
+    display: none;
+  }
+
+  .film-scroll-proxy {
+    height: 500vh;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Preview mode */
+.preview .film-scene {
+  opacity: 1 !important;
+  transform: none !important;
+  pointer-events: auto !important;
+}
+
+.preview .film-scroll-proxy {
+  height: 100vh !important;
+}
+
+.preview .scroll-indicator {
+  display: none !important;
+}
