@@ -1,5 +1,6 @@
 /* ============================================
    FILM SCROLL PORTFOLIO — Nicolò Florean
+   Layout: 3D centrale persistente + info overlay ai lati
    ============================================ */
 
 /* --- Design Tokens --- */
@@ -11,7 +12,7 @@
   --purple-deep: #7c3aed;
   --purple-glow: #c084fc;
   --text: #f5f5f5;
-  --text-muted: #777;
+  --text-muted: #8a8a8a;
   --font-heading: 'Space Grotesk', sans-serif;
   --font-body: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -45,7 +46,17 @@ a {
   text-decoration: none;
 }
 
-/* --- Film Scroll Layout --- */
+button {
+  font-family: inherit;
+  border: none;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* ============================================
+   FILM SCROLL — layout base
+   ============================================ */
 .film-viewport {
   position: fixed;
   inset: 0;
@@ -54,12 +65,15 @@ a {
   background: var(--bg);
 }
 
-.film-scene {
+/* Layer 3D persistente (toro + ottaedro), sempre al centro */
+.film-viewport__3d {
   position: absolute;
   inset: 0;
-  will-change: opacity, transform;
+  z-index: 0;
+  pointer-events: none;
 }
 
+/* Proxy di scroll — crea l'altezza scrollabile */
 .film-scroll-proxy {
   height: 400vh;
   position: relative;
@@ -67,210 +81,168 @@ a {
   pointer-events: none;
 }
 
-/* --- Scroll Indicator --- */
-.scroll-indicator {
-  position: fixed;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 100;
+/* ============================================
+   SEZIONI OVERLAY (ai lati degli oggetti 3D)
+   ============================================ */
+.section-slot {
+  position: absolute;
+  z-index: 2;
   pointer-events: none;
 }
 
-.scroll-indicator__track {
-  position: relative;
-  width: 2px;
-  height: 160px;
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 1px;
-  overflow: hidden;
-}
-
-/* Il fill cresce con lo scroll: nessuna transizione CSS,
-   l'aggiornamento frame-by-frame viene da ScrollTrigger/scroll event */
-.scroll-indicator__fill {
+/* Una card per slot occupa lo stesso spazio, la visibilità
+   è regolata dall'opacity (crossfade tra le sezioni). */
+.section-slot > .info-bloc {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  background: linear-gradient(180deg, var(--purple), var(--purple-glow));
-  border-radius: 1px;
-  box-shadow: 0 0 10px rgba(168, 85, 247, 0.35);
+  pointer-events: auto;
 }
 
-/* --- Section Label (reused across scenes) --- */
+/* Slot laterali: centrati verticalmente */
+.section-slot--left,
+.section-slot--right {
+  top: 50%;
+  transform: translateY(-50%);
+  width: min(360px, 34vw);
+}
+
+.section-slot--left {
+  left: clamp(16px, 5vw, 72px);
+}
+
+.section-slot--right {
+  right: clamp(16px, 5vw, 72px);
+}
+
+.section-slot--left > .info-bloc,
+.section-slot--right > .info-bloc {
+  left: 0;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Slot centrale (contatti): centrato pieno schermo */
+.section-slot--center {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, 64vw);
+}
+
+.section-slot--center > .info-bloc {
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
+/* Vignette dedicata: compare solo con i contatti centrali */
+.contact-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(10, 10, 10, 0.45) 0%,
+    rgba(10, 10, 10, 0.92) 78%
+  );
+}
+
+/* --- Info bloc: niente card, testo diretto sui lati --- */
+.info-bloc {
+  padding: clamp(0.6rem, 1.5vw, 1.2rem);
+  will-change: opacity, transform;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6), 0 0 8px rgba(0, 0, 0, 0.35);
+}
+
+/* Etichetta di sezione (riusata ovunque) */
 .section-label {
   display: block;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--purple);
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  margin-bottom: 1rem;
+  margin-bottom: 0.9rem;
 }
 
 /* ============================================
-   HERO SCENE
+   HERO (sinistra)
    ============================================ */
-.hero-scene {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-}
-
-.hero-scene__3d {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-}
-
-.hero-scene__gradient {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    rgba(10, 10, 10, 0.4) 50%,
-    rgba(10, 10, 10, 0.9) 100%
-  );
-  z-index: 1;
-}
-
-.hero-scene__content {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  padding: 0 5vw;
-  transition: transform 0.1s ease-out;
-}
-
-.hero-scene__name {
+.hero-info__name {
   font-family: var(--font-heading);
-  font-size: clamp(2.5rem, 8vw, 7rem);
+  font-size: clamp(1.75rem, 3.6vw, 2.5rem);
   font-weight: 700;
-  line-height: 1;
+  line-height: 1.05;
   letter-spacing: -0.03em;
-  margin-bottom: 1.5rem;
+  white-space: nowrap; /* il nome resta su una sola riga */
+  margin-bottom: 1.2rem;
 }
 
-.hero-scene__char {
+.hero-info__letter {
   will-change: opacity, transform;
 }
 
-.hero-scene__subtitle {
+.hero-info__subtitle {
   font-family: var(--font-mono);
-  font-size: clamp(0.8rem, 1.5vw, 1.1rem);
+  font-size: clamp(0.78rem, 1.3vw, 1rem);
   color: var(--text-muted);
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  margin-bottom: 3rem;
-}
-
-.hero-scene__hint {
-  font-family: var(--font-mono);
-  font-size: 0.7rem;
-  color: var(--text-muted);
-  letter-spacing: 0.1em;
-  transition: opacity 0.3s;
-}
-
-.hero-scene__arrow {
-  margin-top: 0.5rem;
-  animation: bounce 2s infinite;
-  font-size: 1.2rem;
-}
-
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(6px); }
 }
 
 /* ============================================
-   ABOUT SCENE
+   ABOUT (sinistra, sotto hero)
    ============================================ */
-.about-scene {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  background: var(--bg);
-}
-
-.about-scene__shapes {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-}
-
-.about-scene__layout {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6vw;
-  width: 100%;
-  max-width: 1200px;
-  padding: 0 6vw;
-  align-items: center;
-}
-
-.about-scene__title {
+.about-info__title {
   font-family: var(--font-heading);
-  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
   font-weight: 700;
   line-height: 1.1;
-  margin-bottom: 1.5rem;
-}
-
-.about-scene__bio {
-  font-size: clamp(0.95rem, 1.3vw, 1.1rem);
-  line-height: 1.7;
-  color: var(--text);
   margin-bottom: 1rem;
 }
 
-.about-scene__bio--muted {
+.about-info__bio {
+  font-size: clamp(0.9rem, 1.2vw, 1rem);
+  line-height: 1.65;
+  margin-bottom: 0.8rem;
+}
+
+.about-info__bio--muted {
   color: var(--text-muted);
 }
 
-.about-scene__skills-title {
+.about-info__skills {
+  margin-top: 1.2rem;
+}
+
+.about-info__skills-title {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   color: var(--purple);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin-bottom: 1.5rem;
+  letter-spacing: 0.12em;
+  margin-bottom: 0.9rem;
 }
 
-.about-scene__skills-grid {
+.about-info__skills-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.6rem;
+  gap: 0.5rem;
 }
 
-/* Skill Pill */
+/* Skill Pill — niente box, solo icona + testo */
 .skill-pill {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: var(--surface);
-  border: 1px solid rgba(168, 85, 247, 0.1);
-  border-radius: 100px;
-  font-size: 0.8rem;
-  transition: border-color 0.3s, background 0.3s;
+  font-size: 0.85rem;
+  transition: color 0.3s;
 }
 
 .skill-pill:hover {
-  border-color: var(--purple);
-  background: rgba(168, 85, 247, 0.05);
+  color: var(--purple-glow);
 }
 
 .skill-pill__icon {
@@ -278,251 +250,162 @@ a {
 }
 
 .skill-pill__name {
-  font-family: var(--font-body);
   font-weight: 500;
 }
 
 /* ============================================
-   PORTFOLIO SCENE
+   PORTFOLIO (destra) — righe compatte
    ============================================ */
-.portfolio-scene {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  background: var(--bg);
-  padding: 0 6vw;
-}
-
-.portfolio-scene__header {
-  text-align: center;
-  margin-bottom: 3vh;
-}
-
-.portfolio-scene__title {
+.portfolio-info__title {
   font-family: var(--font-heading);
-  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
   font-weight: 700;
   line-height: 1.1;
+  margin-bottom: 1.1rem;
 }
 
-.portfolio-scene__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  max-width: 1100px;
-  width: 100%;
-  perspective: 1200px;
+.portfolio-info__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
 }
 
-/* Portfolio Card */
-.portfolio-card {
-  position: relative;
+/* Riga progetto — niente box, separatore leggero */
+.portfolio-row {
   display: block;
-  padding: 2rem;
-  background: var(--surface);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 16px;
-  overflow: hidden;
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s;
+  padding: 0.85rem 0.2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.3s;
   will-change: transform, opacity;
 }
 
-.portfolio-card:hover {
+.portfolio-row:hover {
   border-color: var(--card-accent, var(--purple));
+  border-bottom-color: var(--card-accent, var(--purple));
+  transform: translateX(4px);
 }
 
-.portfolio-card__glow {
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(
-    circle at center,
-    var(--card-accent, var(--purple)) 0%,
-    transparent 70%
-  );
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  pointer-events: none;
-}
-
-.portfolio-card:hover .portfolio-card__glow {
-  opacity: 0.06;
-}
-
-.portfolio-card__content {
-  position: relative;
-  z-index: 1;
-}
-
-.portfolio-card__tags {
+.portfolio-row__tags {
   display: flex;
-  gap: 0.4rem;
-  margin-bottom: 1rem;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
 }
 
-.portfolio-card__tag {
+.portfolio-row__tag {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   color: var(--purple);
-  padding: 0.2rem 0.6rem;
-  border: 1px solid rgba(168, 85, 247, 0.2);
-  border-radius: 100px;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
-.portfolio-card__title {
+.portfolio-row__title {
   font-family: var(--font-heading);
-  font-size: 1.4rem;
+  font-size: 1.15rem;
   font-weight: 700;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.35rem;
 }
 
-.portfolio-card__desc {
-  font-size: 0.9rem;
+.portfolio-row__desc {
+  font-size: 0.84rem;
   color: var(--text-muted);
-  line-height: 1.6;
-  margin-bottom: 1.2rem;
+  line-height: 1.55;
+  margin-bottom: 0.6rem;
 }
 
-.portfolio-card__link {
+.portfolio-row__link {
   font-family: var(--font-mono);
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   color: var(--purple);
   transition: color 0.3s;
 }
 
-.portfolio-card:hover .portfolio-card__link {
+.portfolio-row:hover .portfolio-row__link {
   color: var(--purple-glow);
 }
 
 /* CTA */
-.portfolio-scene__cta {
-  margin-top: 4vh;
+.portfolio-info__cta {
+  margin-top: 1.2rem;
   text-align: center;
 }
 
-.portfolio-scene__cta p {
-  font-size: 1.1rem;
+.portfolio-info__cta p {
+  font-size: 0.95rem;
   color: var(--text-muted);
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.7rem;
 }
 
-.portfolio-scene__cta-link {
+.portfolio-info__cta-link {
   font-family: var(--font-mono);
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: var(--purple);
   border: 1px solid var(--purple);
-  padding: 0.7rem 2rem;
+  padding: 0.6rem 1.8rem;
   border-radius: 100px;
   transition: all 0.3s ease;
   background: transparent;
-  cursor: pointer;
 }
 
-.portfolio-scene__cta-link:hover {
+.portfolio-info__cta-link:hover {
   background: var(--purple);
   color: var(--bg);
 }
 
 /* ============================================
-   CONTACT SCENE
+   CONTACT (sopra) — link + footer
    ============================================ */
-.contact-scene {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  background: var(--bg);
-}
-
-.contact-scene__3d {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-}
-
-.contact-scene__gradient {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    ellipse at center,
-    transparent 0%,
-    rgba(10, 10, 10, 0.6) 70%,
-    rgba(10, 10, 10, 0.95) 100%
-  );
-  z-index: 1;
-}
-
-.contact-scene__content {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  padding: 0 6vw;
-  max-width: 700px;
-}
-
-.contact-scene__title {
+.contact-info__title {
   font-family: var(--font-heading);
-  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
   font-weight: 700;
   line-height: 1.1;
-  margin-bottom: 3rem;
+  margin-bottom: 1.1rem;
+  text-align: center;
 }
 
-/* Contact Links */
-.contact-scene__links {
+.contact-info__links {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-bottom: 3rem;
+  gap: 0.7rem;
 }
 
 .contact-link {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.2rem 1.8rem;
-  background: var(--surface);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
+  gap: 1rem;
+  padding: 0.7rem 0.3rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   transition: all 0.3s ease;
 }
 
 .contact-link:hover {
-  border-color: var(--purple);
-  background: rgba(168, 85, 247, 0.04);
+  color: var(--purple-glow);
+  border-bottom-color: var(--purple);
   transform: translateX(4px);
 }
 
 .contact-link__label {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  width: 100px;
-  text-align: left;
+  white-space: nowrap;
 }
 
 .contact-link__value {
-  font-size: 1rem;
+  font-size: 0.92rem;
   font-weight: 500;
-  flex: 1;
   text-align: center;
+  flex: 1;
+  overflow-wrap: anywhere;
 }
 
 .contact-link__arrow {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: var(--purple);
   opacity: 0;
   transform: translateX(-8px);
@@ -534,29 +417,32 @@ a {
   transform: translateX(0);
 }
 
-/* CTA */
-.contact-scene__avail {
-  font-size: 0.9rem;
+.contact-info__cta {
+  margin-top: 1.1rem;
+  text-align: center;
+}
+
+.contact-info__avail {
+  font-size: 0.85rem;
   color: var(--text-muted);
   line-height: 1.6;
 }
 
-/* Footer */
-.contact-scene__footer {
-  margin-top: 4rem;
-  padding-top: 2rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+.contact-info__footer {
+  margin-top: 1.4rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
 }
 
-.contact-scene__brand {
+.contact-info__brand {
   font-family: var(--font-heading);
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--text);
 }
@@ -567,41 +453,132 @@ a {
 }
 
 /* ============================================
+   PROGRESS BAR — batteria del telefono (stretta, centrata)
+   ============================================ */
+.battery {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 100;
+  width: 88px;
+  height: 16px;
+  padding: 2px;
+  background: rgba(10, 10, 10, 0.45);
+  border: 2px solid rgba(168, 85, 247, 0.6);
+  border-radius: 5px;
+  box-shadow: 0 0 12px rgba(168, 85, 247, 0.2);
+  pointer-events: none;
+}
+
+/* Piccolo terminale a destra, come l'icona batteria dei telefoni */
+.battery__nub {
+  position: absolute;
+  right: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 8px;
+  background: rgba(168, 85, 247, 0.6);
+  border-radius: 0 2px 2px 0;
+}
+
+.battery__fill {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, var(--purple-deep), var(--purple), var(--purple-glow));
+  border-radius: 3px;
+}
+
+/* ============================================
+   SCROLL HINT (iniziale, in basso)
+   ============================================ */
+.scroll-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 66px;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  pointer-events: none;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.scroll-hint__text {
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.scroll-hint__arrow {
+  font-size: 1.1rem;
+  color: var(--purple);
+  animation: hint-bounce 2s infinite;
+}
+
+@keyframes hint-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+/* ============================================
    RESPONSIVE
    ============================================ */
 
 /* Tablet */
 @media (max-width: 900px) {
-  .about-scene__layout {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-  }
-
-  .portfolio-scene__grid {
-    grid-template-columns: 1fr 1fr;
-  }
-
-  .scroll-indicator {
-    right: 12px;
+  .section-slot--left,
+  .section-slot--right {
+    width: min(340px, 42vw);
   }
 }
 
-/* Mobile */
+/* Mobile: le sezioni si impilano verticalmente sopra/sotto il 3D */
 @media (max-width: 640px) {
-  .hero-scene__name {
-    font-size: clamp(2rem, 10vw, 3.5rem);
+  .film-scroll-proxy {
+    height: 500vh;
   }
 
-  .portfolio-scene__grid {
-    grid-template-columns: 1fr;
-    max-width: 400px;
+  .section-slot--left {
+    top: 10vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(360px, 92vw);
+  }
+
+  .section-slot--right {
+    top: 50%;
+    bottom: auto;
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(360px, 92vw);
+  }
+
+  .section-slot--right > .info-bloc,
+  .section-slot--left > .info-bloc {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .section-slot--center {
+    width: 92vw;
+  }
+
+  .hero-info__name {
+    font-size: clamp(1.4rem, 7vw, 2rem);
   }
 
   .contact-link {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.3rem;
-    padding: 1rem 1.2rem;
+    gap: 0.2rem;
+    padding: 0.85rem 1rem;
   }
 
   .contact-link__label {
@@ -615,14 +592,6 @@ a {
   .contact-link__arrow {
     display: none;
   }
-
-  .scroll-indicator {
-    display: none;
-  }
-
-  .film-scroll-proxy {
-    height: 500vh;
-  }
 }
 
 /* Reduced motion */
@@ -635,17 +604,15 @@ a {
   }
 }
 
-/* Preview mode */
-.preview .film-scene {
-  opacity: 1 !important;
-  transform: none !important;
-  pointer-events: auto !important;
+/* Preview mode (?preview) */
+.preview .film-viewport > .section-slot {
+  pointer-events: auto;
+}
+
+.preview .film-viewport__3d {
+  position: absolute;
 }
 
 .preview .film-scroll-proxy {
   height: 100vh !important;
-}
-
-.preview .scroll-indicator {
-  display: none !important;
 }

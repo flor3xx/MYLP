@@ -1,44 +1,65 @@
 import { useEffect, useRef, useState } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import CentralGeometry from '../three/CentralGeometry'
 import HeroScene from './HeroScene'
 import AboutScene from './AboutScene'
 import PortfolioScene from './PortfolioScene'
 import ContactScene from './ContactScene'
-import ScrollIndicator from '../components/ScrollIndicator'
+import ProgressBar from '../components/ProgressBar'
+import ScrollHint from '../components/ScrollHint'
 
 gsap.registerPlugin(ScrollTrigger)
 
-const SCENES = [
-  { id: 'hero', component: HeroScene, weight: 1 },
-  { id: 'about', component: AboutScene, weight: 1.8 },
-  { id: 'portfolio', component: PortfolioScene, weight: 1 },
-  { id: 'contact', component: ContactScene, weight: 1 },
+/**
+ * Finestre di progress (0→1 globale) in cui ogni sezione è "attiva".
+ * Dopo la fine della finestra la sezione esce con un breve fadeOut,
+ * così le sezioni nello stesso slot non si sovrappongono.
+ */
+const WINDOWS = [
+  { id: 'hero', start: 0, end: 0.2, fadeOut: 0.06 },
+  { id: 'about', start: 0.2, end: 0.5, fadeOut: 0.06 },
+  { id: 'portfolio', start: 0.5, end: 0.78, fadeOut: 0.06 },
+  { id: 'contact', start: 0.8, end: 1, fadeOut: 0 },
 ]
 
-function resolveScene(totalProgress) {
-  let acc = 0
-  for (let i = 0; i < SCENES.length; i++) {
-    const start = acc
-    const end = acc + SCENES[i].weight / 4.8 // 4.8 = somma pesi
-    if (totalProgress < end || i === SCENES.length - 1) {
-      const local = (totalProgress - start) / (end - start)
-      return { scene: i, progress: Math.max(0, Math.min(1, local)) }
-    }
-    acc = end
+/** progress della sezione: 0→1 dentro la finestra, poi 1→0 nel fadeOut finale. */
+function windowProgress(gp, start, end, fadeOut) {
+  const inP = Math.max(0, Math.min(1, (gp - start) / (end - start)))
+  if (gp > end && fadeOut > 0) {
+    const outP = Math.max(0, Math.min(1, 1 - (gp - end) / fadeOut))
+    return Math.min(inP, 1) * outP
   }
-  return { scene: 0, progress: 0 }
+  return inP
+}
+
+/** Rileva prefers-reduced-motion (reattivo al cambio di preferenza). */
+function useReducedMotion() {
+  const [reduced, setReduced] = useState(false)
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const update = () => setReduced(mq.matches)
+    update()
+    mq.addEventListener?.('change', update)
+    return () => mq.removeEventListener?.('change', update)
+  }, [])
+  return reduced
 }
 
 /**
  * FilmScroll: il cuore dell'esperienza.
- * Viewport fisso, scroll pilota una timeline GSAP.
- * La scena "chi sono" ha più scroll space così tutte le skill hanno tempo di apparire.
+ *
+ * Viewport fisso contenente:
+ *  - un layer 3D centrale PERSISTENTE (toro + ottaedro) per tutta la pagina,
+ *  - sezioni informative in OVERLAY ai lati (hero/about a sinistra,
+ *    portfolio a destra) che appaiono a finestre di progress;
+ *  - i contatti in una slot CENTRALE con una vignette scura dedicata.
+ * Lo scroll pilota il progresso 0→1 con GSAP ScrollTrigger (scrub).
  */
 export default function FilmScroll() {
   const proxyRef = useRef(null)
-  const [activeScene, setActiveScene] = useState(0)
-  const [sceneProgress, setSceneProgress] = useState(0)
+  const [progress, setProgress] = useState(0)
+  const reduced = useReducedMotion()
 
   useEffect(() => {
     document.documentElement.style.scrollBehavior = 'auto'
@@ -53,11 +74,7 @@ export default function FilmScroll() {
           start: 'top top',
           end: 'bottom bottom',
           scrub: 0.6,
-          onUpdate: (self) => {
-            const { scene, progress } = resolveScene(self.progress)
-            setActiveScene(scene)
-            setSceneProgress(progress)
-          },
+          onUpdate: (self) => setProgress(self.progress),
         },
       })
     })
@@ -65,48 +82,49 @@ export default function FilmScroll() {
     return () => ctx.revert()
   }, [])
 
+  // progress locale di ogni sezione
+  const get = (id) => {
+    const w = WINDOWS.find(x => x.id === id)
+    return windowProgress(progress, w.start, w.end, w.fadeOut)
+  }
+
   return (
     <>
-      {/* Fixed viewport — all scenes render here */}
+      {/* Fixed viewport — 3D centrale + sezioni overlay */}
       <div className="film-viewport">
-        {SCENES.map((scene, i) => {
-          const SceneComponent = scene.component
-          const isActive = i === activeScene
-          const isPrev = i < activeScene
-          const isNext = i > activeScene
+        {/* Layer 3D persistente */}
+        <div className="film-viewport__3d">
+          <CentralGeometry progress={progress} reduced={reduced} />
+        </div>
 
-          return (
-            <div
-              key={scene.id}
-              className="film-scene"
-              style={{
-                opacity: isActive ? 1 : 0,
-                zIndex: isActive ? 1 : 0,
-                pointerEvents: isActive ? 'auto' : 'none',
-                transform: isPrev
-                  ? `translateY(-${Math.min(sceneProgress, 1) * 100}%)`
-                  : isNext
-                    ? `translateY(${(1 - Math.min(sceneProgress, 1)) * 100}%)`
-                    : 'none',
-              }}
-            >
-              <SceneComponent
-                progress={isActive ? sceneProgress : isPrev ? 1 : 0}
-                isActive={isActive}
-              />
-            </div>
-          )
-        })}
+        {/* Slot laterale SINISTRA: hero + about */}
+        <div className="section-slot section-slot--left">
+          <HeroScene progress={get('hero')} reduced={reduced} />
+          <AboutScene progress={get('about')} reduced={reduced} />
+        </div>
+
+        {/* Slot laterale DESTRA: portfolio */}
+        <div className="section-slot section-slot--right">
+          <PortfolioScene progress={get('portfolio')} reduced={reduced} />
+        </div>
+
+        {/* Vignette dedicata: solo quando i contatti sono visibili */}
+        <div
+          className="contact-vignette"
+          style={{ opacity: get('contact') }}
+        />
+
+        {/* Slot CENTRALE: contatti (gli unici "dentro" una vignette) */}
+        <div className="section-slot section-slot--center">
+          <ContactScene progress={get('contact')} reduced={reduced} />
+        </div>
       </div>
 
-      {/* Scroll progress indicator */}
-      <ScrollIndicator
-        total={SCENES.length}
-        active={activeScene}
-        progress={sceneProgress}
-      />
+      {/* Hint iniziale + barra di caricamento */}
+      <ScrollHint visible={progress < 0.05} />
+      <ProgressBar progress={progress} />
 
-      {/* Scroll proxy — invisible, creates scrollable height */}
+      {/* Scroll proxy — invisibile, crea l'altezza di scroll */}
       <div ref={proxyRef} className="film-scroll-proxy" />
     </>
   )
