@@ -133,6 +133,8 @@ button {
   left: 0;
   right: 0;
   top: 0;
+  max-height: 82vh;
+  overflow-y: auto;
 }
 
 /* Vignette dedicata: compare solo con i contatti centrali */
@@ -544,8 +546,9 @@ button {
     height: 500vh;
   }
 
+  /* Le card partono dall'alto; se lunghe scorrono internamente */
   .section-slot--left {
-    top: 10vh;
+    top: 6vh;
     left: 50%;
     transform: translateX(-50%);
     width: min(360px, 92vw);
@@ -562,12 +565,50 @@ button {
 
   .section-slot--right > .info-bloc,
   .section-slot--left > .info-bloc {
-    top: 50%;
-    transform: translateY(-50%);
+    top: 0;
+    transform: none;
+    max-height: 82vh;
+    overflow-y: auto;
   }
 
   .section-slot--center {
     width: 92vw;
+  }
+
+  .section-slot--center > .info-bloc {
+    max-height: 82vh;
+    overflow-y: auto;
+  }
+
+  /* About compattato su mobile: bio su 2 righe, secondo paragrafo
+     nascosto, skills più piccole per entrare nello schermo */
+  .about-info__title {
+    font-size: 1.5rem;
+    margin-bottom: 0.7rem;
+  }
+
+  .about-info__bio {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    font-size: 0.88rem;
+  }
+
+  .about-info__bio--muted {
+    display: none;
+  }
+
+  .about-info__skills-title {
+    margin-bottom: 0.6rem;
+  }
+
+  .about-info__skills-grid {
+    gap: 0.45rem 0.9rem;
+  }
+
+  .skill-pill {
+    font-size: 0.8rem;
   }
 
   .hero-info__name {
