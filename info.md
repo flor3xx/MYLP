@@ -170,7 +170,7 @@ Slot centrato pieno schermo (`.section-slot--center`), accompagnato da una **vig
 
 **Responsive**:
 - `≤900px`: slot laterali più stretti (`min(340px, 42vw)`).
-- `≤640px`: le sezioni si impilano verticalmente (left in alto, right al centro, top in alto), proxy a `500vh`, contact link in colonna, frecce nascoste.
+- `≤640px`: le sezioni si impilano verticalmente (left in alto, right al centro, contact al centro); About è compattato (bio su 2 righe, secondo paragrafo nascosto, skill più piccole); le card partono dall'alto e, se lunghe, scorrono internamente (`max-height: 82vh; overflow-y: auto`); proxy a `500vh`, contact link in colonna, frecce nascoste.
 - `prefers-reduced-motion`: azzera durate CSS + JS riduce trasformazioni e 3D.
 
 **Preview mode**: `?preview` in URL → `.preview` su body, proxy ridotto a `100vh`, slot visibili tutte (utile per screenshot/QA).
