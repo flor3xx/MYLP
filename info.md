@@ -208,7 +208,23 @@ npm run build      # build prod → dist/
 npm run preview    # serve dist/ in locale
 ```
 
-`/path/index.html?preview` → vedi le 4 sezioni statiche senza scroll.
+`/path/index.html?preview` → vedi le sezioni statiche senza scroll.
+
+### 10.1 Comandi Git
+
+Remote: `origin` → `https://github.com/flor3xx/MYLP.git`
+
+```bash
+git status                        # stato del working tree
+git add -A                        # staging di tutte le modifiche
+git commit -m "feat: breve descrizione"   # commit descrittivo
+git push origin main              # push su GitHub
+git log --oneline -5              # cronologia recente
+```
+
+> Nota: il remote usa HTTPS, quindi `git push` richiede credenziali GitHub
+> (`gh auth login` o un Personal Access Token configurato come credential helper).
+> L'ultimo commit del redesign (3D centrale + info overlay) è `22b3ab9`.
 
 ---
 
