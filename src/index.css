@@ -119,6 +119,12 @@ button {
   right: 0;
   top: 50%;
   transform: translateY(-50%);
+  /* Anti-taglio: se il contenuto supera lo schermo, il blocco resta
+     centrato e scorre internamente invece di uscire dal fondo. */
+  max-height: 82vh;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(168, 85, 247, 0.4) transparent;
 }
 
 /* Slot centrale (contatti): centrato pieno schermo */

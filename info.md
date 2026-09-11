@@ -137,7 +137,7 @@ Nome "nicolò.florean" **letter-by-letter** (chiave `(progress*3 - i*0.06)*4`), 
 - Skills pills (6, da `content.js`) appaiono in **stagger** (`i*0.1`), finestra `(progress-0.3-delay)/0.12`.
 
 ### 6.3 Portfolio (destra) — finestra 0.5→0.78
-Sostituisce le vecchie 3D card con **righe compatte** (`.portfolio-row`): tag + titolo + descrizione + link "Visita →", hover con accento colore per progetto (`--card-accent`). Due progetti:
+Sostituisce le vecchie 3D card con **righe compatte** (`.portfolio-row`): tag + titolo + descrizione + link "Visita →", hover con accento colore per progetto (`--card-accent`). **Anti-taglio**: le card laterali (hero/about/portfolio) hanno `max-height: 82vh; overflow-y: auto` anche su desktop, così se il contenuto supera lo schermo il blocco resta centrato e scorre internamente (scrollbar viola sottile) invece di uscire dal fondo. Le descrizioni sono volutamente brevi (una riga). Due progetti:
 1. **Lucio Mior** → `https://luciomior.eu`
 2. **Questo sito** → `#` (link da sostituire al deploy)
 

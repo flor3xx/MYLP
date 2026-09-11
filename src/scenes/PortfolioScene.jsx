@@ -8,7 +8,7 @@ const PROJECTS = [
   {
     id: 1,
     title: 'Lucio Mior',
-    desc: 'Portfolio personale con animazioni avanzate e design sperimentale.',
+    desc: 'Portfolio con animazioni avanzate e design sperimentale.',
     url: 'https://luciomior.eu',
     tags: ['React'],
     color: '#a855f7',
@@ -16,7 +16,7 @@ const PROJECTS = [
   {
     id: 2,
     title: 'Questo sito',
-    desc: 'Film scroll, Three.js, GSAP — la pagina che stai guardando.',
+    desc: 'Film scroll con Three.js e GSAP.',
     url: '#',
     tags: ['React', 'Three.js', 'GSAP'],
     color: '#7c3aed',
