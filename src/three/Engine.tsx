@@ -54,8 +54,11 @@ function Mech({ progress, reduced }: { progress: NumRef; reduced: boolean }) {
     const clips = gltf.animations
     if (!clips.length) return null
     const instance = new THREE.AnimationMixer(gltf.scene)
-    const idle = clips.find((clip) => /idle/i.test(clip.name)) ?? clips[0]
-    instance.clipAction(idle).play()
+    const dance =
+      clips.find((clip) => /dance/i.test(clip.name)) ??
+      clips.find((clip) => /idle/i.test(clip.name)) ??
+      clips[0]
+    instance.clipAction(dance).play()
     return instance
   }, [gltf])
 

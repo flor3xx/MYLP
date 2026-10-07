@@ -43,7 +43,7 @@ Strategy: near-black ground with a single committed pink accent. The pink/violet
 - The model is auto-normalized at load (bounding box → centered + scaled to a target size), so its native scale/orientation in the file does not matter.
 - Reflections come from `RoomEnvironment` via `PMREMGenerator`; there is **no external HDRI asset**.
 - Driven by a `progress` ref (0→1): the mech spins as the timeline is scrubbed. The engine (and the model) is lazy-loaded as a separate chunk so the initial bundle stays small.
-- The model ships **17 skeletal clips** (Idle, Walk, Run, Dance, …). The **Idle** clip runs continuously through an `AnimationMixer` on real time, so the robot keeps animating even when the timeline is paused.
+- The model ships **17 skeletal clips** (Idle, Walk, Run, Dance, …). The **Dance** clip runs continuously through an `AnimationMixer` on real time, so the robot keeps dancing even when the timeline is paused.
 - The mech's horizontal offset is proportional to viewport aspect (centered on narrow screens, shifted right on wide ones).
 
 ## Motion
@@ -67,5 +67,5 @@ Strategy: near-black ground with a single committed pink accent. The pink/violet
 
 ## Unresolved / next
 
-- The mech's embedded `Idle` clip plays rather than a bespoke animation; other clips (Walk, Run, Shoot…) are available in the file if a richer interaction is wanted.
+- The mech's embedded `Dance` clip plays rather than a bespoke animation; other clips (Idle, Walk, Run, Shoot…) are available in the file if a different interaction is wanted.
 - No work/case-study section yet (no confirmed project evidence).
