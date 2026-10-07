@@ -5,7 +5,7 @@
 - Personal landing page for **Nicolò Florean**, a developer who builds landing pages. The site itself is the portfolio piece.
 - Stack: **Vite + React + TypeScript** (React 19, Vite 8, TypeScript 6). Linting is `oxlint`.
 - `src/App.tsx` composes the sections in `src/sections/` (`Nav`, `Hero`, `Range`, `Demo`, `Metodo`, `Contatti`). All styles and design tokens live in `src/index.css`; page copy and the real contact links live in `src/data/content.ts`.
-- The hero ships a `three` + `@react-three/fiber` engine (`src/three/Engine.tsx`, lazy-loaded in `src/components/Scrubber.tsx` + `Engine`), driven by a progress ref and a timeline scrubber. `prefers-reduced-motion` disables both and shows a CSS fallback.
+- The hero ships a `three` + `@react-three/fiber` scene (`src/three/Engine.tsx`) that renders the mech model `public/mech.glb` and is driven by a progress ref + timeline scrubber (`src/components/Scrubber.tsx`). The model is auto-normalized (bounding box → center + scale). `prefers-reduced-motion` disables the 3D and scrubber and shows a CSS fallback. Accent color is pink (`--accent: #ff4d8d`) on a near-black ground.
 
 ## Commands
 

@@ -1,6 +1,6 @@
 # Design
 
-Direction: **“Il motore”** — dark cinematic. A dominant 3D engine (React Three Fiber) fills the hero and is driven by a drag/scrub **timeline** control, echoing animejs.com. The rest of the page stays on the dark ground.
+Direction: **“Il mech”** — dark cinematic. A 3D robot mech (`public/mech.glb`, loaded with React Three Fiber) fills the hero and is driven by a drag/scrub **timeline** control, echoing animejs.com. The rest of the page stays on the dark ground.
 
 ## Surface & mode
 
@@ -17,32 +17,34 @@ Direction: **“Il motore”** — dark cinematic. A dominant 3D engine (React T
 | `--line` | `#26262c` | Hairline borders |
 | `--ink` | `#f5f5f7` | Primary text |
 | `--muted` | `#8a8a92` | Secondary text |
-| `--accent` | `#ff6a3d` | Ember: primary action, live state, 3D highlights |
-| `--accent-ink` | `#12100e` | Text on ember |
-| `--cobalt` | `#3b5bff` | 3D secondary light + demo orb only |
-| `--violet` | `#8b5cf6` | Demo orb only |
+| `--accent` | `#ff4d8d` | Pink: primary action, live state, 3D highlights |
+| `--accent-ink` | `#16050d` | Text on pink |
+| `--cobalt` | `#b14dff` | 3D secondary light + demo orb only |
+| `--violet` | `#d67bff` | Demo orb only |
 
-Strategy: near-black ground with a single committed warm accent (ember). Cobalt/violet appear only inside the 3D scene and the demo, never as UI chrome.
+Strategy: near-black ground with a single committed pink accent. The pink/violet family appears in the 3D lighting and the demo; UI chrome stays neutral.
 
 ## Typography
 
 - Display: **Bricolage Grotesque** (700/600/500) — wordmark, H1/H2, card/step titles.
 - Body/UI: **Schibsted Grotesk** (400–600).
 - No monospace; technical labels use uppercase Schibsted with wide tracking.
-- H1: `clamp(38px, 5vw, 68px)`, weight 700, line-height 1.02, tracking −0.03em, `em` in ember.
+- H1: `clamp(38px, 5vw, 68px)`, weight 700, line-height 1.02, tracking −0.03em, `em` in pink.
 
 ## Form & components
 
 - Capsule-first: buttons, chips, pills, segmented controls, scrubber use `border-radius: 999px`.
 - Hero is **full-bleed** (`min-height: 100svh`) with the 3D canvas behind, a left-to-right scrim for text legibility, overlay text on the left, a chapter rail on the right and the scrubber at the bottom.
-- Reusable pieces: `.btn` (`--primary` ember, `--dark` ghost, `--sm`, `--lg`), `.chip`, `.badge`, `.card`, `.seg`, `.contact-pill`, `.scrubber`.
+- Reusable pieces: `.btn` (`--primary` pink, `--dark` ghost, `--sm`, `--lg`), `.chip`, `.badge`, `.card`, `.seg`, `.contact-pill`, `.scrubber`.
 
 ## 3D engine
 
-- `src/three/Engine.tsx` — React Three Fiber canvas: an orbital engine (emissive core + torus rings + satellites + dust).
+- `src/three/Engine.tsx` — React Three Fiber canvas rendering **`public/mech.glb`** (a Quaternius mech, glTF 2.0).
+- The model is auto-normalized at load (bounding box → centered + scaled to a target size), so its native scale/orientation in the file does not matter.
 - Reflections come from `RoomEnvironment` via `PMREMGenerator`; there is **no external HDRI asset**.
-- Driven by a `progress` ref (0→1): rotation, ring spin and satellite orbit. The engine is lazy-loaded (separate ~915 KB chunk) so the initial bundle stays ~234 KB.
-- The group's horizontal offset is proportional to viewport aspect (centered on narrow screens, shifted right on wide ones).
+- Driven by a `progress` ref (0→1): the mech spins as the timeline is scrubbed. The engine (and the model) is lazy-loaded as a separate chunk so the initial bundle stays small.
+- The model ships **17 skeletal clips** (Idle, Walk, Run, Dance, …). The **Idle** clip runs continuously through an `AnimationMixer` on real time, so the robot keeps animating even when the timeline is paused.
+- The mech's horizontal offset is proportional to viewport aspect (centered on narrow screens, shifted right on wide ones).
 
 ## Motion
 
@@ -59,11 +61,11 @@ Strategy: near-black ground with a single committed warm accent (ember). Cobalt/
 
 ## Accessibility
 
-- Skip link to `#contenuto`; focus ring in ember.
+- Skip link to `#contenuto`; focus ring in pink.
 - Segmented controls use `aria-pressed`; the scrubber is a labelled range input; decorative layers are `aria-hidden`.
 - Real links only (mailto, Instagram, GitHub).
 
 ## Unresolved / next
 
-- The engine is procedural; a bespoke imported 3D model would raise fidelity.
+- The mech's embedded `Idle` clip plays rather than a bespoke animation; other clips (Walk, Run, Shoot…) are available in the file if a richer interaction is wanted.
 - No work/case-study section yet (no confirmed project evidence).
