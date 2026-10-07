@@ -468,6 +468,7 @@ section {
 }
 
 .clip {
+  position: relative;
   flex: none;
   display: flex;
   align-items: center;
@@ -487,37 +488,72 @@ section {
   color: var(--muted);
 }
 
-.clip__field {
-  position: relative;
+.clip__button {
   display: inline-flex;
   align-items: center;
-}
-
-.clip__select {
-  appearance: none;
-  -webkit-appearance: none;
-  padding-right: 22px;
-  background: transparent;
-  border: 0;
+  gap: 8px;
   color: var(--ink);
-  font: inherit;
   font-size: 13.5px;
   font-weight: 600;
-  cursor: pointer;
-}
-
-.clip__select option {
-  color: #0b0b0d;
-  background: #ffffff;
 }
 
 .clip__chevron {
-  position: absolute;
-  right: 0;
   width: 14px;
   height: 14px;
   color: var(--muted);
-  pointer-events: none;
+  transition: transform 0.2s var(--ease-out);
+}
+
+.clip__button[aria-expanded="true"] .clip__chevron {
+  transform: rotate(180deg);
+}
+
+.clip__menu {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 10px);
+  z-index: 6;
+  min-width: 190px;
+  max-height: 264px;
+  overflow-y: auto;
+  padding: 6px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: 0 30px 60px -24px rgba(0, 0, 0, 0.95);
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+.clip__menu::-webkit-scrollbar {
+  width: 8px;
+}
+
+.clip__menu::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 999px;
+}
+
+.clip__option {
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.clip__option.is-active {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.clip__option.is-selected {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.clip__option.is-selected.is-active {
+  background: rgba(255, 77, 141, 0.14);
 }
 
 .scrubber__play {

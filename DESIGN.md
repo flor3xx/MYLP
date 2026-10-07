@@ -50,7 +50,7 @@ Strategy: near-black ground with a single committed pink accent. The pink/violet
 
 - Easing: `--ease-out: cubic-bezier(0.23, 1, 0.32, 1)`; UI transitions under ~300ms.
 - Press feedback: `transform: scale(0.97)` on buttons/pills.
-- The **scrubber** (native `input[type=range]`) seeks the animation, pauses auto-play on scrub, and has a play/pause control. Beside it, a **clip selector** switches the mech animation (crossfades between the model's clips) — it is independent of the timeline, so the robot animates even while paused.
+- The **scrubber** (native `input[type=range]`) seeks the animation, pauses auto-play on scrub, and has a play/pause control. Beside it, a **clip selector** (a custom themed dropdown, not a native `<select>`) switches the mech animation with a crossfade — it is independent of the timeline, so the robot animates even while paused.
 - `prefers-reduced-motion: reduce`: the 3D engine and scrubber are not rendered at all; a CSS ring fallback is shown. Hover effects only under `@media (hover: hover) and (pointer: fine)`.
 
 ## Layout & responsive
