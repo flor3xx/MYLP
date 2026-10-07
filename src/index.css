@@ -353,7 +353,7 @@ section {
 .hero__overlay {
   position: relative;
   z-index: 2;
-  padding-block: 150px 210px;
+  padding-block: clamp(104px, 13vh, 150px) clamp(132px, 17vh, 210px);
 }
 
 .hero__title {
@@ -1191,6 +1191,22 @@ section {
 /* ---------- responsive ---------- */
 
 @media (max-width: 1080px) {
+  .hero__stage::after {
+    background:
+      linear-gradient(
+        180deg,
+        rgba(11, 11, 13, 0.4) 0%,
+        rgba(11, 11, 13, 0.12) 42%,
+        rgba(11, 11, 13, 0.72) 100%
+      ),
+      linear-gradient(
+        100deg,
+        rgba(11, 11, 13, 0.96) 0%,
+        rgba(11, 11, 13, 0.74) 46%,
+        rgba(11, 11, 13, 0.3) 100%
+      );
+  }
+
   .cards {
     grid-template-columns: 1fr;
     gap: 18px;
@@ -1262,7 +1278,7 @@ section {
   }
 
   .hero__overlay {
-    padding-block: 120px 220px;
+    padding-block: 96px 132px;
   }
 
   .hero__title {

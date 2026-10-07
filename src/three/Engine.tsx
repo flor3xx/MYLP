@@ -82,9 +82,14 @@ function Mech({
 
   useFrame((state, delta) => {
     const p = progress.current ?? 0
-    const t = state.clock.elapsedTime
+    const time = state.clock.elapsedTime
     const aspect = size.width / Math.max(size.height, 1)
-    const targetX = THREE.MathUtils.clamp((aspect - 1.1) * 4.2, 0, 2.6)
+    // Wide screens: large, shifted right. Narrow screens: smaller, lower-right,
+    // so it stops overlapping the overlay text.
+    const k = THREE.MathUtils.clamp((aspect - 1) / 0.5, 0, 1)
+    const targetX = THREE.MathUtils.lerp(0.95, 2.1, k)
+    const targetY = THREE.MathUtils.lerp(-1.15, 0.1, k)
+    const targetScale = THREE.MathUtils.lerp(0.78, 0.94, k)
 
     if (mixer) mixer.update(Math.min(delta, 0.05))
 
@@ -94,12 +99,21 @@ function Mech({
         targetX,
         0.08,
       )
-      group.current.rotation.y = -0.7 + p * Math.PI * 2 + (reduced ? 0 : t * 0.12)
+      group.current.position.y = THREE.MathUtils.lerp(
+        group.current.position.y,
+        targetY,
+        0.08,
+      )
+      group.current.scale.setScalar(
+        THREE.MathUtils.lerp(group.current.scale.x, targetScale, 0.08),
+      )
+      group.current.rotation.y =
+        -0.7 + p * Math.PI * 2 + (reduced ? 0 : time * 0.12)
     }
   })
 
   return (
-    <group ref={group} position={[0, 0.1, 0]}>
+    <group ref={group} position={[0.95, -1.15, 0]} scale={0.78}>
       <group
         scale={model.factor}
         position={[
