@@ -9,10 +9,12 @@ type NumRef = { current: number }
 type EngineProps = {
   progress: NumRef
   reduced: boolean
+  clip: string
 }
 
 const MODEL_URL = `${import.meta.env.BASE_URL}mech.glb`
 const TARGET_SIZE = 3.3
+const FADE = 0.35
 
 function Environment() {
   const { gl, scene } = useThree()
@@ -35,7 +37,15 @@ function Environment() {
   return null
 }
 
-function Mech({ progress, reduced }: { progress: NumRef; reduced: boolean }) {
+function Mech({
+  progress,
+  reduced,
+  clip,
+}: {
+  progress: NumRef
+  reduced: boolean
+  clip: string
+}) {
   const gltf = useLoader(GLTFLoader, MODEL_URL)
   const group = useRef<THREE.Group>(null)
   const { size } = useThree()
@@ -48,19 +58,27 @@ function Mech({ progress, reduced }: { progress: NumRef; reduced: boolean }) {
     return { scene: gltf.scene, center, factor: TARGET_SIZE / maxDim }
   }, [gltf.scene])
 
-  // The model's own skeletal animation always plays, independently of the
-  // timeline: pausing the scrubber must not freeze the robot.
-  const mixer = useMemo(() => {
-    const clips = gltf.animations
-    if (!clips.length) return null
-    const instance = new THREE.AnimationMixer(gltf.scene)
-    const dance =
-      clips.find((clip) => /dance/i.test(clip.name)) ??
-      clips.find((clip) => /idle/i.test(clip.name)) ??
-      clips[0]
-    instance.clipAction(dance).play()
-    return instance
-  }, [gltf])
+  // The chosen clip always plays on real time, independently of the timeline:
+  // pausing the scrubber must not freeze the robot.
+  const mixer = useMemo(
+    () => (gltf.animations.length ? new THREE.AnimationMixer(gltf.scene) : null),
+    [gltf],
+  )
+  const currentAction = useRef<THREE.AnimationAction | null>(null)
+
+  useEffect(() => {
+    if (!mixer) return
+    const key = clip.toLowerCase()
+    const target =
+      gltf.animations.find((c) => c.name.toLowerCase().includes(key)) ??
+      gltf.animations[0]
+    if (!target) return
+    const next = mixer.clipAction(target)
+    if (currentAction.current === next) return
+    next.reset().setEffectiveTimeScale(1).setEffectiveWeight(1).fadeIn(FADE).play()
+    currentAction.current?.fadeOut(FADE)
+    currentAction.current = next
+  }, [mixer, gltf, clip])
 
   useFrame((state, delta) => {
     const p = progress.current ?? 0
@@ -139,7 +157,7 @@ function StaticFrame() {
   return null
 }
 
-function Engine({ progress, reduced }: EngineProps) {
+function Engine({ progress, reduced, clip }: EngineProps) {
   return (
     <Canvas
       dpr={[1, 1.6]}
@@ -154,7 +172,7 @@ function Engine({ progress, reduced }: EngineProps) {
       <pointLight position={[5, -3, 5]} intensity={25} color="#ffa3d1" />
       <Environment />
       <Suspense fallback={null}>
-        <Mech progress={progress} reduced={reduced} />
+        <Mech progress={progress} reduced={reduced} clip={clip} />
       </Suspense>
       <Dust />
       {reduced && <StaticFrame />}

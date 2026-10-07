@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react"
 import { MAILTO } from "../data/content"
 import Scrubber from "../components/Scrubber"
+import ClipPicker from "../components/ClipPicker"
 
 const Engine = lazy(() => import("../three/Engine"))
 
@@ -17,6 +18,7 @@ export default function Hero() {
   const progressRef = useRef(0)
   const [playing, setPlaying] = useState(true)
   const [reduced, setReduced] = useState(false)
+  const [clip, setClip] = useState("Dance")
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)")
@@ -57,7 +59,7 @@ export default function Hero() {
         {!reduced && (
           <div className="hero__canvas" aria-hidden="true">
             <Suspense fallback={null}>
-              <Engine progress={progressRef} reduced={reduced} />
+              <Engine progress={progressRef} reduced={reduced} clip={clip} />
             </Suspense>
           </div>
         )}
@@ -68,8 +70,8 @@ export default function Hero() {
             Costruisco landing page che <em>lavorano</em>.
           </h1>
           <p className="hero__lead">
-            Siti, web app e grafica 3D. L'oggetto al centro è il motore che anima
-            questa pagina: scrubba la timeline per controllarlo.
+            Siti, web app e grafica 3D. Il mech al centro è il motore che anima
+            questa pagina: scrubba la timeline e scegli la sua animazione.
           </p>
 
           <div className="hero__cta">
@@ -91,13 +93,16 @@ export default function Hero() {
         </div>
 
         {!reduced && (
-          <Scrubber
-            valueRef={progressRef}
-            playing={playing}
-            onToggle={() => setPlaying((p) => !p)}
-            onSeek={handleSeek}
-            label="Scrubba l'animazione del motore 3D"
-          />
+          <div className="hero__controls">
+            <Scrubber
+              valueRef={progressRef}
+              playing={playing}
+              onToggle={() => setPlaying((p) => !p)}
+              onSeek={handleSeek}
+              label="Scrubba l'animazione del mech 3D"
+            />
+            <ClipPicker value={clip} onChange={setClip} />
+          </div>
         )}
 
         <nav className="hero__rail" aria-label="Capitoli">

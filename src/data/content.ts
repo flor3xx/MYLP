@@ -8,6 +8,26 @@ export const CONTACTS = {
 
 export const MAILTO = `mailto:${CONTACTS.email}`
 
+export const MECH_CLIPS = [
+  "Dance",
+  "Idle",
+  "Walk",
+  "Run",
+  "Jump",
+  "Jump_Landing",
+  "Jump_NoHeight",
+  "Kick",
+  "Hello",
+  "Yes",
+  "No",
+  "Pickup",
+  "Shoot_Big",
+  "Shoot_Small",
+  "HitRecieve_1",
+  "HitRecieve_2",
+  "Death",
+] as const
+
 export const NAV_LINKS = [
   { label: "Cosa faccio", href: "#cosa-faccio" },
   { label: "Demo", href: "#demo" },
