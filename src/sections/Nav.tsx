@@ -1,4 +1,3 @@
-import { MAILTO } from "../data/content"
 import { usePreferences } from "../app/usePreferences"
 import { t } from "../data/translations"
 
@@ -25,9 +24,6 @@ export default function Nav() {
             <span className="badge__dot" aria-hidden="true" />
             {copy.nav.availability}
           </span>
-          <a className="btn btn--dark btn--sm" href={MAILTO}>
-            {copy.nav.contactCta}
-          </a>
         </div>
       </div>
     </header>

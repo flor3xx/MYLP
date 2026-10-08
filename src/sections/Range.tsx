@@ -1,6 +1,7 @@
 import { SERVICES, type Service } from "../data/content"
 import { usePreferences } from "../app/usePreferences"
 import { t } from "../data/translations"
+import { Reveal } from "../components/Reveal"
 
 function ServiceIcon({ kind }: { kind: Service["icon"] }) {
   if (kind === "web") {
@@ -37,20 +38,20 @@ export default function Range() {
   return (
     <section className="range" id="cosa-faccio">
       <div className="container">
-        <p className="eyebrow">{copy.services.eyebrow}</p>
-        <h2 className="section-title">{copy.services.title}</h2>
-        <p className="section-lead">{copy.services.lead}</p>
+        <Reveal as="p" className="eyebrow">{copy.services.eyebrow}</Reveal>
+        <Reveal as="h2" className="section-title" delay={70}>{copy.services.title}</Reveal>
+        <Reveal as="p" className="section-lead" delay={140}>{copy.services.lead}</Reveal>
 
         <ul className="cards">
           {copy.services.items.map((service, index) => (
-            <li className="card" key={service.name}>
+            <Reveal as="li" className="card" delay={index * 70} key={service.name}>
               <span className="card__icon">
                 <ServiceIcon kind={SERVICES[index].icon} />
               </span>
               <h3 className="card__title">{service.name}</h3>
               <p className="card__copy">{service.copy}</p>
               <p className="card__tags">{service.tags}</p>
-            </li>
+            </Reveal>
           ))}
         </ul>
       </div>

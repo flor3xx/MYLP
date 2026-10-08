@@ -1,6 +1,7 @@
 import { MAILTO } from "../data/content"
 import { usePreferences } from "../app/usePreferences"
 import { t } from "../data/translations"
+import { Reveal } from "../components/Reveal"
 
 export default function Hero() {
   const { preferences } = usePreferences()
@@ -9,35 +10,39 @@ export default function Hero() {
   return (
     <section className="hero" id="top">
       <div className="hero__stage container">
-        <div className="hero__visual">
+        <Reveal className="hero__visual" delay={0}>
           <div className="hero__photo">
             <img src="/profilePick.jpeg" alt={copy.hero.photoAlt} />
           </div>
-        </div>
+        </Reveal>
 
         <div className="hero__copy">
-          <p className="eyebrow">{copy.hero.eyebrow}</p>
-          <h1 className="hero__title">
+          <Reveal as="p" className="eyebrow" delay={80}>
+            {copy.hero.eyebrow}
+          </Reveal>
+          <Reveal as="h1" className="hero__title" delay={160}>
             {copy.hero.title} <em>{copy.hero.titleEmphasis}</em>.
-          </h1>
-          <p className="hero__lead">{copy.hero.lead}</p>
+          </Reveal>
+          <Reveal as="p" className="hero__lead" delay={240}>
+            {copy.hero.lead}
+          </Reveal>
 
-          <div className="hero__cta">
+          <Reveal className="hero__cta" delay={320}>
             <a className="btn btn--primary" href={MAILTO}>
               {copy.hero.contactCta} <span aria-hidden="true">→</span>
             </a>
             <a className="link-arrow" href="#cosa-faccio">
               {copy.hero.moreCta} <span aria-hidden="true">↓</span>
             </a>
-          </div>
+          </Reveal>
 
-          <ul className="chips">
+          <Reveal className="chips" delay={400}>
             {copy.hero.chips.map((chip) => (
               <li className="chip" key={chip}>
                 {chip}
               </li>
             ))}
-          </ul>
+          </Reveal>
         </div>
       </div>
 
