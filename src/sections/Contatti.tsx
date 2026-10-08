@@ -1,21 +1,25 @@
 import { CONTACTS, MAILTO } from "../data/content"
+import { usePreferences } from "../app/usePreferences"
+import { t } from "../data/translations"
 
 const YEAR = new Date().getFullYear()
 
 export default function Contatti() {
+  const { preferences } = usePreferences()
+  const copy = t(preferences.language)
   return (
     <section className="contatti" id="contatti">
       <div className="container">
-        <p className="eyebrow">Contatti</p>
+        <p className="eyebrow">{copy.contact.eyebrow}</p>
         <h2 className="section-title section-title--xl">
-          Raccontami il tuo progetto.
+          {copy.contact.title}
         </h2>
         <p className="section-lead">
-          Rispondo entro 24 ore. Scrivimi cosa vuoi costruire e ne parliamo.
+          {copy.contact.lead}
         </p>
 
         <a className="btn btn--primary btn--lg" href={MAILTO}>
-          Scrivimi · {CONTACTS.email}
+          {copy.contact.emailCta}
         </a>
 
         <ul className="contact-links">
@@ -27,7 +31,7 @@ export default function Contatti() {
               rel="noopener noreferrer"
             >
               <span className="contact-pill__dot" aria-hidden="true" />
-              Instagram · {CONTACTS.instagramHandle}
+              {copy.contact.instagramCta}
             </a>
           </li>
           <li>
@@ -38,15 +42,15 @@ export default function Contatti() {
               rel="noopener noreferrer"
             >
               <span className="contact-pill__dot" aria-hidden="true" />
-              GitHub · {CONTACTS.githubLabel}
+              {copy.contact.githubCta}
             </a>
           </li>
         </ul>
       </div>
 
       <footer className="footer container">
-        <span>© {YEAR} nicolò florean</span>
-        <span>Fatto con React, Penpot e molta attenzione.</span>
+        <span>{copy.footer.copyright.replace("{year}", String(YEAR))}</span>
+        <span>{copy.footer.credit}</span>
       </footer>
     </section>
   )

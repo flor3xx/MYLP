@@ -1,6 +1,10 @@
-import { MAILTO, NAV_LINKS } from "../data/content"
+import { MAILTO } from "../data/content"
+import { usePreferences } from "../app/usePreferences"
+import { t } from "../data/translations"
 
 export default function Nav() {
+  const { preferences } = usePreferences()
+  const copy = t(preferences.language)
   return (
     <header className="nav">
       <div className="nav__inner container">
@@ -9,7 +13,7 @@ export default function Nav() {
         </a>
 
         <nav className="nav__links" aria-label="Sezioni della pagina">
-          {NAV_LINKS.map((link) => (
+          {copy.nav.links.map((link) => (
             <a key={link.href} href={link.href}>
               {link.label}
             </a>
@@ -19,10 +23,10 @@ export default function Nav() {
         <div className="nav__actions">
           <span className="badge">
             <span className="badge__dot" aria-hidden="true" />
-            Disponibile ora
+            {copy.nav.availability}
           </span>
           <a className="btn btn--dark btn--sm" href={MAILTO}>
-            Parliamone
+            {copy.nav.contactCta}
           </a>
         </div>
       </div>

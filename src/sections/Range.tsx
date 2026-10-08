@@ -1,4 +1,6 @@
 import { SERVICES, type Service } from "../data/content"
+import { usePreferences } from "../app/usePreferences"
+import { t } from "../data/translations"
 
 function ServiceIcon({ kind }: { kind: Service["icon"] }) {
   if (kind === "web") {
@@ -30,21 +32,20 @@ function ServiceIcon({ kind }: { kind: Service["icon"] }) {
 }
 
 export default function Range() {
+  const { preferences } = usePreferences()
+  const copy = t(preferences.language)
   return (
     <section className="range" id="cosa-faccio">
       <div className="container">
-        <p className="eyebrow">Cosa faccio</p>
-        <h2 className="section-title">Tre modi in cui posso aiutarti.</h2>
-        <p className="section-lead">
-          Dal sito vetrina alla web app, fino alla grafica 3D. Scegli quanto ti
-          serve — o tutto insieme.
-        </p>
+        <p className="eyebrow">{copy.services.eyebrow}</p>
+        <h2 className="section-title">{copy.services.title}</h2>
+        <p className="section-lead">{copy.services.lead}</p>
 
         <ul className="cards">
-          {SERVICES.map((service) => (
+          {copy.services.items.map((service, index) => (
             <li className="card" key={service.name}>
               <span className="card__icon">
-                <ServiceIcon kind={service.icon} />
+                <ServiceIcon kind={SERVICES[index].icon} />
               </span>
               <h3 className="card__title">{service.name}</h3>
               <p className="card__copy">{service.copy}</p>

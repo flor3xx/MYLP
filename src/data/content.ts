@@ -8,33 +8,6 @@ export const CONTACTS = {
 
 export const MAILTO = `mailto:${CONTACTS.email}`
 
-export const MECH_CLIPS = [
-  "Dance",
-  "Idle",
-  "Walk",
-  "Run",
-  "Jump",
-  "Jump_Landing",
-  "Jump_NoHeight",
-  "Kick",
-  "Hello",
-  "Yes",
-  "No",
-  "Pickup",
-  "Shoot_Big",
-  "Shoot_Small",
-  "HitRecieve_1",
-  "HitRecieve_2",
-  "Death",
-] as const
-
-export const NAV_LINKS = [
-  { label: "Cosa faccio", href: "#cosa-faccio" },
-  { label: "Demo", href: "#demo" },
-  { label: "Metodo", href: "#metodo" },
-  { label: "Contatti", href: "#contatti" },
-] as const
-
 export type Service = {
   name: string
   copy: string
@@ -63,20 +36,3 @@ export const SERVICES: Service[] = [
   },
 ]
 
-export const STEPS = [
-  {
-    number: "01",
-    title: "Capisco",
-    copy: "Obiettivo, pubblico e cosa deve ottenere la pagina. Una call, poi ti dico cosa serve davvero.",
-  },
-  {
-    number: "02",
-    title: "Progetto",
-    copy: "Struttura e interfaccia definite in Penpot. Vedi il risultato prima che diventi codice.",
-  },
-  {
-    number: "03",
-    title: "Costruisco e verifico",
-    copy: "Sviluppo con attenzione a velocità e accessibilità. Confronto il risultato col progetto e correggo.",
-  },
-] as const
