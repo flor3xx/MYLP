@@ -28,3 +28,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local design review captures (regenerate with the QA script)
+docs/screens/
