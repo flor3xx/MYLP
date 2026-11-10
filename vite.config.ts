@@ -1,8 +1,9 @@
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
 
-// On GitHub Actions the site is served from https://<user>.github.io/MYLP/.
+// Deployed on Vercel at the domain root, so the site is served from `/`.
+// Assets imported from `src/assets` inherit this base and get hashed URLs.
 export default defineConfig({
-  base: process.env.GITHUB_ACTIONS ? '/MYLP/' : '/',
+  base: '/',
   plugins: [react()],
 })

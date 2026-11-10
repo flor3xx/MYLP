@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# Vercel
+.vercel
+
+# Local tooling state
+.taste-skill/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
