@@ -231,15 +231,20 @@
 }
 
 .hero__strip .specimen {
-  width: clamp(240px, 25vw, 370px);
-  height: clamp(190px, 27vh, 310px);
+  width: clamp(230px, 24vw, 340px);
+  height: clamp(180px, 26vh, 300px);
   flex: none;
   scroll-snap-align: center;
+  opacity: 0.55;
+  transition: opacity 220ms ease, transform 320ms var(--ease-out);
 }
 
-.hero__strip .specimen:nth-child(3) {
-  width: clamp(300px, 31vw, 470px);
-  height: clamp(230px, 34vh, 380px);
+/* The frame closest to the middle of the strip carries the emphasis; it moves
+   with arrows, trackpad and touch because it is derived from scroll position. */
+.hero__strip .specimen.is-focused {
+  opacity: 1;
+  transform: scale(1.08);
+  z-index: 1;
 }
 
 /* Bottom row ----------------------------------------------------------- */
@@ -298,13 +303,13 @@
     border-color: var(--accent);
   }
 
-  .hero__strip-track:hover .specimen {
-    opacity: 0.55;
+  .hero__strip-track:hover .specimen:not(:hover) {
+    opacity: 0.45;
   }
 
-  .hero__strip-track:hover .specimen:hover {
+  .hero__strip-track .specimen:hover {
     opacity: 1;
-    transform: translateY(-8px);
+    transform: scale(1.08) translateY(-4px);
   }
 
   .strip-nav__btn:hover {
@@ -375,11 +380,16 @@
     height: 100%;
   }
 
-  .hero__strip .specimen,
-  .hero__strip .specimen:nth-child(3) {
-    width: 78vw;
-    height: 43vh;
-    min-height: 230px;
+  .hero__strip .specimen {
+    width: 72vw;
+    height: 40vh;
+    min-height: 220px;
+  }
+
+  /* Keeping every frame the same size avoids a reflow jump while swiping; the
+     emphasis travels as a small scale plus the opacity step. */
+  .hero__strip .specimen.is-focused {
+    transform: scale(1.04);
   }
 
   .hero__bottom {
@@ -404,13 +414,12 @@
     transform: none;
   }
 
-  .hero__strip-track:hover .specimen {
-    opacity: 1;
-  }
-
-  .hero__strip-track:hover .specimen:hover {
+  .hero__strip .specimen,
+  .hero__strip .specimen.is-focused,
+  .hero__strip-track .specimen:hover {
     transform: none;
   }
+
 }
 
 .app-shell[data-motion="off"] .wall-cell__drift {
@@ -418,8 +427,12 @@
   transform: none;
 }
 
-.app-shell[data-motion="off"] .hero__strip-track:hover .specimen,
-.app-shell[data-motion="off"] .hero__strip-track:hover .specimen:hover {
-  opacity: 1;
+.app-shell[data-motion="off"] .hero__strip .specimen,
+.app-shell[data-motion="off"] .hero__strip .specimen.is-focused,
+.app-shell[data-motion="off"] .hero__strip-track .specimen:hover {
   transform: none;
+}
+
+.app-shell[data-motion="off"] .hero__strip-track:hover .specimen:not(:hover) {
+  opacity: 0.55;
 }
