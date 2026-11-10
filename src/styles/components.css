@@ -1,0 +1,485 @@
+/* Shared visual primitives reused by more than one section (owner: visuals). */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.badge__dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* Frames --------------------------------------------------------------- */
+
+.frame {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  border-radius: var(--radius-card);
+  background: var(--surface);
+  color: var(--ink);
+  isolation: isolate;
+}
+
+.frame__chrome {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+.frame__chrome span {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--line);
+}
+
+.frame__chrome b {
+  min-width: 0;
+  margin-left: auto;
+  overflow: hidden;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.frame__body {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  container-type: size;
+}
+
+.frame--photo .frame__body {
+  padding: 0;
+}
+
+.frame--photo .frame__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 20%;
+}
+
+/* Specimens ------------------------------------------------------------ */
+
+.specimen {
+  min-height: 180px;
+  transition: transform 240ms var(--ease-out), background-color 220ms ease,
+    opacity 180ms ease;
+}
+
+.specimen__window {
+  position: absolute;
+  inset: 14px 11% 12%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 1fr 1fr;
+  gap: 8px;
+}
+
+.specimen__window i {
+  display: block;
+  background: var(--accent-soft);
+  border-radius: calc(var(--radius-card) / 2);
+}
+
+.specimen__window i:first-child {
+  grid-column: span 2;
+  background: var(--accent);
+  opacity: 0.9;
+}
+
+.specimen__window strong {
+  grid-column: span 2;
+  align-self: end;
+  font: 600 clamp(14px, 10cqw, 30px) / 0.95 var(--font-display);
+  letter-spacing: -0.04em;
+}
+
+.specimen__swatches {
+  position: absolute;
+  inset: 22px 11% 20%;
+  display: flex;
+  gap: 8px;
+}
+
+.specimen__swatches i {
+  flex: 1;
+  border-radius: var(--radius-card);
+  background: var(--accent);
+}
+
+.specimen__swatches i:nth-child(2) {
+  background: var(--surface-2);
+}
+
+.specimen__swatches i:nth-child(3) {
+  background: var(--ink);
+}
+
+.specimen__swatches i:nth-child(4) {
+  background: var(--accent-soft);
+}
+
+.specimen__orbit {
+  position: absolute;
+  inset: 18px 22%;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  transform: rotate(-15deg);
+}
+
+.specimen__orbit::before,
+.specimen__orbit::after {
+  content: "";
+  position: absolute;
+  inset: 20%;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  transform: rotate(60deg);
+}
+
+.specimen__orbit::after {
+  inset: 40% 4%;
+  transform: rotate(-35deg);
+  border-color: var(--ink);
+}
+
+.specimen__orbit i {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  top: 10%;
+  left: 50%;
+
+}
+
+.specimen__orbit i:nth-child(2) {
+  top: 54%;
+  left: 13%;
+  background: var(--ink);
+  box-shadow: none;
+}
+
+.specimen__orbit i:nth-child(3) {
+  top: 72%;
+  left: 76%;
+  background: var(--accent);
+}
+
+.specimen__layout {
+  position: absolute;
+  inset: 14px 12% 12%;
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr;
+  grid-template-rows: repeat(3, 1fr);
+  gap: 7px;
+}
+
+.specimen__layout i {
+  background: var(--accent-soft);
+  border-radius: calc(var(--radius-card) / 2);
+}
+
+.specimen__layout i:first-child {
+  grid-row: span 3;
+  background: var(--accent);
+}
+
+.specimen__layout i:nth-child(4) {
+  background: var(--ink);
+}
+
+/* Type specimen: a real glyph sample set in the live display face. */
+.specimen__type {
+  position: absolute;
+  inset: 12px 12% 12%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.specimen__type-glyph {
+  font-family: var(--font-display);
+  font-size: clamp(36px, min(32cqw, 26cqh), 120px);
+  font-weight: 700;
+  line-height: 0.78;
+  letter-spacing: -0.06em;
+}
+
+.specimen__type-weights {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 12px;
+  letter-spacing: -0.01em;
+}
+
+.specimen__type-weights span:nth-child(1) {
+  font-weight: 400;
+  opacity: 0.62;
+}
+
+.specimen__type-weights span:nth-child(2) {
+  font-weight: 600;
+  opacity: 0.82;
+}
+
+.specimen__type-weights span:nth-child(3) {
+  font-weight: 700;
+}
+
+.specimen__type-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  color: var(--muted);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.specimen__type-set {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 10px;
+  letter-spacing: 0.01em;
+  text-overflow: ellipsis;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+/* Grid specimen: a strict 6 x 3 miniature of the contact sheet. */
+.specimen__grid {
+  position: absolute;
+  inset: 14px 10% 14%;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  gap: calc(var(--frame-gap) / 2 + 2px);
+}
+
+.specimen__grid i {
+  background: var(--accent-soft);
+  border-radius: calc(var(--radius-card) / 2);
+}
+
+.specimen__grid i:nth-child(1) {
+  grid-column: 1 / span 2;
+  grid-row: 1 / span 2;
+  background: var(--accent);
+}
+
+.specimen__grid i:nth-child(2) {
+  grid-column: 3 / span 2;
+  grid-row: 1;
+  background: var(--surface-2);
+}
+
+.specimen__grid i:nth-child(3) {
+  grid-column: 5 / span 2;
+  grid-row: 1;
+}
+
+.specimen__grid i:nth-child(4) {
+  grid-column: 3 / span 4;
+  grid-row: 2;
+  background: var(--ink);
+  opacity: 0.9;
+}
+
+.specimen__grid i:nth-child(5) {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+.specimen__grid i:nth-child(6) {
+  grid-column: 2 / span 3;
+  grid-row: 3;
+  background: var(--surface-2);
+}
+
+.specimen__grid i:nth-child(7) {
+  grid-column: 5 / span 2;
+  grid-row: 3;
+  background: var(--accent);
+}
+
+/* Chart specimen: an abstract density trace, no axes and no numbers. */
+.specimen__chart {
+  position: absolute;
+  inset: 24% 10% 24%;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.specimen__chart i {
+  flex: 1;
+  min-width: 2px;
+  height: 40%;
+  background: var(--accent-soft);
+  border-radius: calc(var(--radius-card) / 3);
+}
+
+.specimen__chart i:nth-child(4n + 1) {
+  background: var(--accent);
+}
+
+.specimen__chart i:nth-child(1) {
+  height: 28%;
+}
+
+.specimen__chart i:nth-child(2) {
+  height: 46%;
+}
+
+.specimen__chart i:nth-child(3) {
+  height: 34%;
+}
+
+.specimen__chart i:nth-child(4) {
+  height: 62%;
+}
+
+.specimen__chart i:nth-child(5) {
+  height: 40%;
+}
+
+.specimen__chart i:nth-child(6) {
+  height: 70%;
+}
+
+.specimen__chart i:nth-child(7) {
+  height: 30%;
+}
+
+.specimen__chart i:nth-child(8) {
+  height: 54%;
+}
+
+.specimen__chart i:nth-child(9) {
+  height: 78%;
+}
+
+.specimen__chart i:nth-child(10) {
+  height: 44%;
+}
+
+.specimen__chart i:nth-child(11) {
+  height: 66%;
+}
+
+.specimen__chart i:nth-child(12) {
+  height: 38%;
+}
+
+.specimen__chart i:nth-child(13) {
+  height: 58%;
+}
+
+.specimen__chart i:nth-child(14) {
+  height: 74%;
+}
+
+.specimen__chart i:nth-child(15) {
+  height: 48%;
+}
+
+.specimen__chart i:nth-child(16) {
+  height: 64%;
+}
+
+.specimen__chart i:nth-child(17) {
+  height: 36%;
+}
+
+.specimen__chart i:nth-child(18) {
+  height: 52%;
+}
+
+/* Code specimen: real CSS from this page, set in the body face on purpose. */
+.specimen__code {
+  position: absolute;
+  inset: 10px 10%;
+  margin: 0;
+  overflow: hidden;
+  color: var(--muted);
+  font-family: var(--font-body);
+  font-size: clamp(8px, 5.2cqw, 13px);
+  font-variant-ligatures: none;
+  letter-spacing: 0.01em;
+  line-height: 1.5;
+  white-space: pre;
+}
+
+.specimen__code span {
+  display: block;
+}
+
+.specimen__code .is-accent {
+  color: var(--accent);
+}
+
+.specimen__code .is-ink {
+  color: var(--ink);
+}
+
+/* Narrow cells drop the display line; short cells drop the weight list. */
+@container (max-width: 175px) {
+  .specimen__window strong {
+    display: none;
+  }
+}
+
+@container (max-height: 260px) {
+  .specimen__type-weights {
+    display: none;
+  }
+}
+
+@container (max-width: 200px) {
+  .specimen__code {
+    inset-inline: 6%;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .specimen:hover {
+    transform: translateY(-6px) rotate(0.4deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .specimen:hover {
+    transform: none;
+  }
+}
+
+.app-shell[data-motion="off"] .specimen:hover {
+  transform: none;
+}

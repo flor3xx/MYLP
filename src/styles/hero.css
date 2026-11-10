@@ -1,0 +1,419 @@
+/* Hero (owner: visuals). */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: 112px 36px;
+  overflow: hidden;
+}
+
+/* Metadata row --------------------------------------------------------- */
+
+.hero__meta {
+  position: absolute;
+  inset: 86px var(--page-pad) auto;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px 24px;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+}
+
+.hero__meta span:first-child {
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+
+/* Statement and brief -------------------------------------------------- */
+
+.hero__copy {
+  position: relative;
+  z-index: 2;
+}
+
+.hero__statement {
+  max-width: 18ch;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(40px, 10.5vw, 108px);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.055em;
+  text-wrap: balance;
+}
+
+.hero__statement em {
+  color: var(--accent);
+  font-style: normal;
+}
+
+.hero__brief {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(24px, 5vw, 72px);
+  margin-top: clamp(22px, 2.8vw, 36px);
+}
+
+.hero__lead {
+  max-width: 50ch;
+  margin: 0;
+  color: var(--muted);
+  font-size: clamp(16px, 1.3vw, 19px);
+}
+
+.hero__cta {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 22px;
+}
+
+.hero__cta .btn,
+.hero__cta .link-arrow {
+  white-space: nowrap;
+}
+
+.hero__cta .link-arrow {
+  min-height: 44px;
+  border-bottom: 0;
+}
+
+.hero__cta .link-arrow__label {
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+  transition: border-color 180ms ease;
+}
+
+/* Frame wall ----------------------------------------------------------- */
+
+.hero__wall {
+  margin-block: clamp(36px, 4.6vw, 64px) clamp(20px, 3vw, 34px);
+}
+
+.hero__wall-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: clamp(200px, 17vw, 280px) clamp(150px, 12vw, 200px);
+  grid-template-areas:
+    "profile profile profile window window window window window window type type type"
+    "profile profile profile grid grid grid code code code type type type";
+  gap: var(--frame-gap);
+}
+
+.wall-cell {
+  min-width: 0;
+}
+
+.wall-cell--profile {
+  grid-area: profile;
+}
+
+.wall-cell--window {
+  grid-area: window;
+}
+
+.wall-cell--type {
+  grid-area: type;
+}
+
+.wall-cell--grid {
+  grid-area: grid;
+}
+
+.wall-cell--code {
+  grid-area: code;
+}
+
+/* The wall enters with opacity + a clip wipe, so its travel stays out of the
+   text block; the drift layer below only translates. */
+.wall-cell.reveal {
+  transform: none;
+}
+
+.wall-cell__drift {
+  height: 100%;
+  transform: translate3d(0, calc(var(--drift-y, 0px) * var(--depth, 1)), 0);
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path var(--motion-duration) var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.wall-cell[data-visible="true"] .wall-cell__drift {
+  clip-path: inset(0 0 0 0);
+}
+
+.wall-cell .frame {
+  height: 100%;
+  min-height: 0;
+}
+
+.wall-cell .specimen {
+  min-height: 0;
+}
+
+/* Horizontal strip ----------------------------------------------------- */
+
+.hero__strip-band {
+  position: relative;
+  z-index: 1;
+}
+
+.hero__strip-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.hero__strip-label {
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  color: var(--muted);
+}
+
+.hero__strip-nav {
+  display: flex;
+  gap: 8px;
+}
+
+.strip-nav__btn {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--ink);
+  transition: background-color 160ms ease, border-color 160ms ease,
+    color 160ms ease, transform 140ms var(--ease-out);
+}
+
+.strip-nav__btn:active {
+  transform: scale(0.97);
+}
+
+.hero__strip {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  padding-inline: var(--page-pad);
+  scroll-padding-inline: var(--page-pad);
+  scrollbar-width: none;
+  scroll-snap-type: x mandatory;
+}
+
+.hero__strip::-webkit-scrollbar {
+  display: none;
+}
+
+.hero__strip:focus-visible {
+  outline-offset: -4px;
+}
+
+.hero__strip-track {
+  width: max-content;
+  display: flex;
+  align-items: center;
+  gap: var(--frame-gap);
+  padding-block: 12px 20px;
+}
+
+.hero__strip .specimen {
+  width: clamp(240px, 25vw, 370px);
+  height: clamp(190px, 27vh, 310px);
+  flex: none;
+  scroll-snap-align: center;
+}
+
+.hero__strip .specimen:nth-child(3) {
+  width: clamp(300px, 31vw, 470px);
+  height: clamp(230px, 34vh, 380px);
+}
+
+/* Bottom row ----------------------------------------------------------- */
+
+.hero__bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.hero__customizer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--ink);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent);
+}
+
+/* Layout preference hooks applied to the hero composition. */
+.app-shell[data-layout="split"] .hero__copy {
+  max-width: 760px;
+  margin-left: 8%;
+}
+
+.app-shell[data-layout="split"] .hero__brief {
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.app-shell[data-layout="centered"] .hero__copy {
+  text-align: center;
+}
+
+.app-shell[data-layout="centered"] .hero__statement {
+  margin-inline: auto;
+}
+
+.app-shell[data-layout="centered"] .hero__brief {
+  align-items: center;
+  flex-direction: column;
+}
+
+.app-shell[data-layout="centered"] .hero__cta {
+  justify-content: center;
+}
+
+/* Pointer-only states -------------------------------------------------- */
+
+@media (hover: hover) and (pointer: fine) {
+  .hero__cta .link-arrow:hover .link-arrow__label {
+    border-color: var(--accent);
+  }
+
+  .hero__strip-track:hover .specimen {
+    opacity: 0.55;
+  }
+
+  .hero__strip-track:hover .specimen:hover {
+    opacity: 1;
+    transform: translateY(-8px);
+  }
+
+  .strip-nav__btn:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .hero__customizer-link:hover {
+    color: var(--accent);
+  }
+}
+
+/* Responsive ----------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .hero__brief {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .hero__wall-grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-rows: clamp(180px, 26vw, 240px) clamp(140px, 20vw, 190px) 150px;
+    grid-template-areas:
+      "profile profile profile window window window"
+      "profile profile profile type type type"
+      "grid grid grid code code code";
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding-block: 108px 28px;
+  }
+
+  .hero__meta {
+    display: none;
+  }
+
+  .hero__cta {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    width: 100%;
+  }
+
+  .hero__cta .btn {
+    width: 100%;
+  }
+
+  .hero__cta .link-arrow {
+    justify-content: center;
+  }
+
+  .hero__wall-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: 250px 170px 140px;
+    grid-template-areas:
+      "profile profile"
+      "window type"
+      "grid code";
+  }
+
+  .hero__strip .specimen,
+  .hero__strip .specimen:nth-child(3) {
+    width: 78vw;
+    height: 43vh;
+    min-height: 230px;
+  }
+
+  .hero__bottom {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+@media (max-width: 380px) {
+  .hero__statement {
+    font-size: 36px;
+  }
+}
+
+/* Reduced motion and the explicit off preference ----------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .wall-cell__drift {
+    clip-path: none;
+    transition: none;
+    transform: none;
+  }
+
+  .hero__strip-track:hover .specimen {
+    opacity: 1;
+  }
+
+  .hero__strip-track:hover .specimen:hover {
+    transform: none;
+  }
+}
+
+.app-shell[data-motion="off"] .wall-cell__drift {
+  clip-path: none;
+  transform: none;
+}
+
+.app-shell[data-motion="off"] .hero__strip-track:hover .specimen,
+.app-shell[data-motion="off"] .hero__strip-track:hover .specimen:hover {
+  opacity: 1;
+  transform: none;
+}
