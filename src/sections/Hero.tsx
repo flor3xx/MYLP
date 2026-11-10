@@ -2,58 +2,84 @@ import { MAILTO } from "../data/content"
 import { usePreferences } from "../app/usePreferences"
 import { t } from "../data/translations"
 import { Reveal } from "../components/Reveal"
+import FrameWall from "../components/FrameWall"
+import StripRail from "../components/StripRail"
+
+function ArrowUpRight() {
+  return (
+    <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false">
+      <path
+        d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
+function ArrowDown() {
+  return (
+    <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false">
+      <path
+        d="M8 3.5v9M4.5 9 8 12.5 11.5 9"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
 
 export default function Hero() {
   const { preferences } = usePreferences()
   const copy = t(preferences.language)
+  const italian = preferences.language === "it"
 
   return (
     <section className="hero" id="top">
-      <div className="hero__stage container">
-        <Reveal className="hero__visual" delay={0}>
-          <div className="hero__photo">
-            <img src="/profilePick.jpeg" alt={copy.hero.photoAlt} />
-          </div>
-        </Reveal>
+      <div className="hero__meta container">
+        <span>{copy.hero.eyebrow}</span>
+        <span>{italian ? "siti / web app / motion" : "websites / web apps / motion"}</span>
+      </div>
 
-        <div className="hero__copy">
-          <Reveal as="p" className="eyebrow" delay={80}>
-            {copy.hero.eyebrow}
-          </Reveal>
-          <Reveal as="h1" className="hero__title" delay={160}>
-            {copy.hero.title} <em>{copy.hero.titleEmphasis}</em>.
-          </Reveal>
-          <Reveal as="p" className="hero__lead" delay={240}>
+      <div className="hero__copy container">
+        <Reveal as="h1" className="hero__statement">
+          {copy.hero.title} <em>{copy.hero.titleEmphasis}.</em>
+        </Reveal>
+        <div className="hero__brief">
+          <Reveal as="p" className="hero__lead" delay={60}>
             {copy.hero.lead}
           </Reveal>
-
-          <Reveal className="hero__cta" delay={320}>
+          <Reveal className="hero__cta" delay={120}>
             <a className="btn btn--primary" href={MAILTO}>
-              {copy.hero.contactCta} <span aria-hidden="true">→</span>
+              {copy.hero.contactCta} <ArrowUpRight />
             </a>
             <a className="link-arrow" href="#cosa-faccio">
-              {copy.hero.moreCta} <span aria-hidden="true">↓</span>
+              <span className="link-arrow__label">{copy.hero.moreCta}</span> <ArrowDown />
             </a>
-          </Reveal>
-
-          <Reveal className="chips" delay={400}>
-            {copy.hero.chips.map((chip) => (
-              <li className="chip" key={chip}>
-                {chip}
-              </li>
-            ))}
           </Reveal>
         </div>
       </div>
 
-      <nav className="hero__rail container" aria-label={copy.aria.heroChapters}>
-        {copy.hero.chapters.slice(1).map((c) => (
-          <a key={c.href} href={c.href} className="hero__rail-link">
-            <span aria-hidden="true" />
-            {c.label}
-          </a>
-        ))}
-      </nav>
+      <FrameWall />
+
+      <Reveal delay={560}>
+        <StripRail />
+      </Reveal>
+
+      <Reveal className="hero__bottom container" delay={620}>
+        <span className="hero__hint">
+          {italian ? "Scorri per vedere il sistema" : "Scroll to see the system"}
+        </span>
+        <a href="#customizer-sheet" className="hero__customizer-link">
+          {italian ? "Remixa la pagina" : "Remix the page"} <ArrowUpRight />
+        </a>
+      </Reveal>
     </section>
   )
 }

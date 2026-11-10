@@ -1,59 +1,57 @@
-import { SERVICES, type Service } from "../data/content"
+import { MAILTO } from "../data/content"
 import { usePreferences } from "../app/usePreferences"
 import { t } from "../data/translations"
 import { Reveal } from "../components/Reveal"
+import Specimen from "../components/Specimen"
 
-function ServiceIcon({ kind }: { kind: Service["icon"] }) {
-  if (kind === "web") {
-    return (
-      <svg viewBox="0 0 56 46" aria-hidden="true">
-        <rect x="1.5" y="1.5" width="53" height="43" rx="8" />
-        <path d="M1.5 12.5h53" />
-      </svg>
-    )
-  }
-  if (kind === "app") {
-    return (
-      <svg viewBox="0 0 58 58" aria-hidden="true">
-        <rect x="1.5" y="1.5" width="55" height="55" rx="12" />
-        <rect className="fill-cobalt" x="11" y="11" width="16" height="16" rx="4" />
-        <rect className="fill-ink" x="33" y="11" width="16" height="16" rx="4" />
-        <rect className="fill-ink" x="11" y="33" width="16" height="16" rx="4" />
-        <rect className="fill-verm" x="33" y="33" width="16" height="16" rx="4" />
-      </svg>
-    )
-  }
-  return (
-    <svg viewBox="0 0 64 52" aria-hidden="true">
-      <ellipse className="fill-violet" cx="32" cy="26" rx="17" ry="17" />
-      <ellipse className="stroke-cobalt" cx="32" cy="30" rx="31" ry="14" />
-      <circle className="fill-cobalt" cx="59" cy="9" r="5" />
-    </svg>
-  )
-}
+const FRAME_KINDS = ["window", "layout", "motion"] as const
 
 export default function Range() {
   const { preferences } = usePreferences()
   const copy = t(preferences.language)
-  return (
-    <section className="range" id="cosa-faccio">
-      <div className="container">
-        <Reveal as="p" className="eyebrow">{copy.services.eyebrow}</Reveal>
-        <Reveal as="h2" className="section-title" delay={70}>{copy.services.title}</Reveal>
-        <Reveal as="p" className="section-lead" delay={140}>{copy.services.lead}</Reveal>
 
-        <ul className="cards">
-          {copy.services.items.map((service, index) => (
-            <Reveal as="li" className="card" delay={index * 70} key={service.name}>
-              <span className="card__icon">
-                <ServiceIcon kind={SERVICES[index].icon} />
-              </span>
-              <h3 className="card__title">{service.name}</h3>
-              <p className="card__copy">{service.copy}</p>
-              <p className="card__tags">{service.tags}</p>
-            </Reveal>
-          ))}
-        </ul>
+  return (
+    <section className="range" id="cosa-faccio" aria-label={copy.services.title}>
+      <div className="container range__head">
+        <Reveal as="h2" className="section-title range__title">
+          {copy.services.title}
+        </Reveal>
+        <Reveal as="p" className="range__lead" delay={70}>
+          {copy.services.lead}
+        </Reveal>
+      </div>
+
+      <div className="container range__sheet">
+        {copy.services.items.map((service, index) => (
+          <Reveal
+            as="article"
+            className={`range__frame range__frame--${index + 1}`}
+            delay={index * 80}
+            key={service.name}
+          >
+            <div className="range__visual">
+              <Specimen
+                kind={FRAME_KINDS[index] ?? "window"}
+                label={`${service.name} — specimen`}
+              />
+            </div>
+            <div className="range__caption">
+              <div className="range__caption-head">
+                <h3>{service.name}</h3>
+                <a
+                  className="range__link"
+                  href={MAILTO}
+                  aria-label={`${copy.nav.contactCta} — ${service.name}`}
+                >
+                  {copy.nav.contactCta}
+                  <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+              <p className="range__copy">{service.copy}</p>
+              <p className="range__tags">{service.tags}</p>
+            </div>
+          </Reveal>
+        ))}
       </div>
     </section>
   )
