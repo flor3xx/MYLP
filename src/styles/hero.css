@@ -328,7 +328,7 @@
 
   .hero__wall-grid {
     grid-template-columns: repeat(6, minmax(0, 1fr));
-    grid-template-rows: clamp(180px, 26vw, 240px) clamp(140px, 20vw, 190px) 150px;
+    grid-template-rows: clamp(230px, 30vw, 300px) clamp(180px, 24vw, 220px) 150px;
     grid-template-areas:
       "profile profile profile window window window"
       "profile profile profile type type type"
@@ -362,11 +362,17 @@
 
   .hero__wall-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: 250px 170px 140px;
+    grid-template-rows: clamp(380px, 108vw, 470px) 170px 140px;
     grid-template-areas:
       "profile profile"
       "window type"
       "grid code";
+  }
+
+  /* A portrait needs a portrait cell: the extra height keeps the whole head and
+     the chin inside the frame instead of slicing the face. */
+  .wall-cell--profile .frame {
+    height: 100%;
   }
 
   .hero__strip .specimen,
