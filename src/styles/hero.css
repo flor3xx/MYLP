@@ -240,11 +240,10 @@
 }
 
 /* The frame closest to the middle of the strip carries the emphasis; it moves
-   with arrows, trackpad and touch because it is derived from scroll position. */
+   with arrows, trackpad and touch because it is derived from scroll position.
+   Every frame keeps the same size: brightness alone marks the active one. */
 .hero__strip .specimen.is-focused {
   opacity: 1;
-  transform: scale(1.08);
-  z-index: 1;
 }
 
 /* Bottom row ----------------------------------------------------------- */
@@ -384,12 +383,6 @@
     width: 72vw;
     height: 40vh;
     min-height: 220px;
-  }
-
-  /* Keeping every frame the same size avoids a reflow jump while swiping; the
-     emphasis travels as a small scale plus the opacity step. */
-  .hero__strip .specimen.is-focused {
-    transform: scale(1.04);
   }
 
   .hero__bottom {
